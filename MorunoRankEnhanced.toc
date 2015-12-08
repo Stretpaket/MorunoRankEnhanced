@@ -1,0 +1,8 @@
+## Title: MurunoRankEnhanced
+## Interface: 11200
+## Author: Stretpaket @ Nostalrius PVP
+## Notes: Shows Rank Progress
+## Version: 1.1
+## SavedVariablesPerCharacter: MorunoRank_SV
+
+MorunoRankEnhanced.lua
