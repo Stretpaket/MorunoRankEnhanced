@@ -1,5 +1,5 @@
 --CORE LOGIC/CALCULATIONS WRITTEN BY MARTOCK(thread: https://forum.nostalrius.org/viewtopic.php?f=63&t=22558)
---EXPANDED WITH UI BY STRETPAKET @ NOSTALRIUS PVP
+--EXPANDED WITH UI BY STRETPAKET @ NOSTALRIUS PVP(thread: https://forum.nostalrius.org/viewtopic.php?f=63&t=28269)
 local isRunning = false;
 local function isNAN(value) --standard func.
   return value ~= value
