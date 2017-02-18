@@ -6,7 +6,7 @@ local function isNAN(value) --standard func.
 end
 local initDone = false;
 --CREATE FRAME 
-local Frame = CreateFrame("Frame")
+local Frame = CreateFrame("Frame", "mreFrame", UIParent)
 --AND SET EVENTS
 	Frame:RegisterEvent("CHAT_MSG_COMBAT_HONOR_GAIN")--on honorgain
 	Frame:RegisterEvent("PLAYER_PVP_KILLS_CHANGED")--"backup" event, fires when HK's update.
@@ -32,7 +32,7 @@ local Frame = CreateFrame("Frame")
 	Frame:SetWidth(110)
 	Frame:SetHeight(72)
 	Frame:SetPoint('CENTER', UIParent, 'CENTER', 0,0)
-	Frame:SetFrameStrata('DIALOG')
+	Frame:SetFrameStrata('MEDIUM')
 	Frame:SetBackdrop(backdrop)
 	Frame:SetBackdropBorderColor(1,1,1,1)
 	Frame:SetBackdropColor(1,1,1,0.4);
@@ -90,63 +90,11 @@ local Frame = CreateFrame("Frame")
 		text3:SetText("STRETPAKET");
 --UI STUFF DONE
 
---SLASH MSGs
-local function SlashCmd(msg, self) 	
-	if msg == "hide" or msg == "h" then
-		Frame:Hide();
-		MorunoRank_SV["hidden"] = true;
-		DEFAULT_CHAT_FRAME:AddMessage("MorunoRankEnhanced is hidden. \"/mre show\" or \"/mre s\" to show.",1,0,0);
-	elseif msg == "show" or msg=="s" then
-		Frame:Show();
-		MorunoRank_SV["hidden"] = false;
-		DEFAULT_CHAT_FRAME:AddMessage("MorunoRankEnhanced is shown \"/mre hide\" or \"/mre h\" to hide.",0,1,0);		
-	elseif msg == "lock" or msg == "l" then
-		MorunoRank_SV["locked"] = true;
-		Frame:EnableMouse(false)
-		Frame:SetMovable(false)
-		DEFAULT_CHAT_FRAME:AddMessage("MorunoRankEnhanced is locked. \"/mre unlock\" or \"/mre u\" to unlock.",1,0,0);
-	elseif msg == "unlock" or msg == "u" then
-		MorunoRank_SV["locked"] = false;
-		Frame:EnableMouse(true)
-		Frame:SetMovable(true)
-		DEFAULT_CHAT_FRAME:AddMessage("MorunoRankEnhanced is unlocked \"/mre lock\" or \"/mre l\" to lock.",0,1,0);
-	elseif msg == "help" then
-		DEFAULT_CHAT_FRAME:AddMessage("MorunoRankEnhanced(UI by Stretpaket)",1,0.4,0.7);
-		DEFAULT_CHAT_FRAME:AddMessage("Help:");
-		DEFAULT_CHAT_FRAME:AddMessage("\"/mre show\" or \"/mre s\" to show.");
-		DEFAULT_CHAT_FRAME:AddMessage("\"/mre hide\" or \"/mre h\" to hide.");
-		DEFAULT_CHAT_FRAME:AddMessage("\"/mre lock\" or \"/mre l\" to lock.");
-		DEFAULT_CHAT_FRAME:AddMessage("\"/mre unlock\" or \"/mre u\" to unlock.");
-		DEFAULT_CHAT_FRAME:AddMessage("\"/mre report\" or \"/mre r\" to to see full MorunoRank report.");
-	elseif msg == "report" or msg == "r" then
-		chatReport = true;
-		MorunoRank();
-	elseif msg == "reset" then
-		Frame:ClearAllPoints()
-		MorunoRank_SV = {["y"] = 0,["x"] = 0,["point"] = "CENTER",["relativePoint"] = "CENTER",["locked"] = false,["hidden"] = false}
-		Frame:SetPoint("CENTER", UIParent, "CENTER", 0,0);
-		Frame:Show()
-		Frame:EnableMouse(true)
-		Frame:SetMovable(true)		
-		DEFAULT_CHAT_FRAME:AddMessage("MorunoRankEnhanced was reset to original settings(placed in the middle of the screen)");		
-	else
-		DEFAULT_CHAT_FRAME:AddMessage("MorunoRankEnhanced(UI by Stretpaket)",1,0.4,0.7);
-		DEFAULT_CHAT_FRAME:AddMessage("Help:");
-		DEFAULT_CHAT_FRAME:AddMessage("\"/mre show\" or \"/mre s\" to show.");
-		DEFAULT_CHAT_FRAME:AddMessage("\"/mre hide\" or \"/mre h\" to hide.");
-		DEFAULT_CHAT_FRAME:AddMessage("\"/mre lock\" or \"/mre l\" to lock.");
-		DEFAULT_CHAT_FRAME:AddMessage("\"/mre unlock\" or \"/mre u\" to unlock.");
-		DEFAULT_CHAT_FRAME:AddMessage("\"/mre report\" or \"/mre r\" to see full MorunoRank report.");
-		DEFAULT_CHAT_FRAME:AddMessage("\"/mre reset\" to reset the window placement(to the middle of the screen).");
-	end	
-end
-SLASH_MRE1 = '/mre';
-SLASH_MRE2 = '/MorunoRankEnhanced';
-SlashCmdList["MRE"] = SlashCmd;
---SLASH MSGs DONE
+
+
 
 --CORE LOGIC BELOW WRITTEN BY MARTOCK(thread: https://forum.nostalrius.org/viewtopic.php?f=63&t=22558)
-function getCurrentRank(CurrentRP) -- 
+local function getCurrentRank(CurrentRP) -- 
  
 	local CRank = 0;
 	 
@@ -170,7 +118,7 @@ function getCurrentRank(CurrentRP) --
  
 end;
  
-function getCurrentHP(CurrentRP)
+local function getCurrentHP(CurrentRP)
  
 	local CRank = 0;
     if(CurrentRP == 14) then CRank = 60000; end;
@@ -193,7 +141,7 @@ function getCurrentHP(CurrentRP)
 end;
  
  
-function MorunoRank()	
+local function MorunoRank()	
 
     local PercentPVPRank=math.floor(GetPVPRankProgress(target)*100);
     local UPVPRank=UnitPVPRank("player");
@@ -256,7 +204,7 @@ end
 --LOGIC DONE
 
 --INIT BELOW(LOAD SETTINGS LIKE POS, HIDDEN, LOCKED)
-function mrInit()	
+local function mrInit()	
 	Frame:UnregisterEvent("ADDON_LOADED");--wont be needing this no more	
 	--SEE IF SV's are loaded/set
 	if MorunoRank_SV == nil or MorunoRank_SV["point"] == nil or MorunoRank_SV ["relativePoint"] == nil or MorunoRank_SV["x"] == nil or MorunoRank_SV["y"] == nil or MorunoRank_SV["hidden"] == nil or MorunoRank_SV["locked"] == nil then 
@@ -295,6 +243,62 @@ function mrInit()
 	initDone = true;	
 end
 --INIT DONE.
+
+--SLASH MSGs
+function SlashCmd(msg, self) 	
+	if msg == "hide" or msg == "h" then
+		Frame:Hide();
+		MorunoRank_SV["hidden"] = true;
+		DEFAULT_CHAT_FRAME:AddMessage("MorunoRankEnhanced is hidden. \"/mre show\" or \"/mre s\" to show.",1,0,0);
+	elseif msg == "show" or msg=="s" then
+		Frame:Show();
+		MorunoRank_SV["hidden"] = false;
+		DEFAULT_CHAT_FRAME:AddMessage("MorunoRankEnhanced is shown \"/mre hide\" or \"/mre h\" to hide.",0,1,0);		
+	elseif msg == "lock" or msg == "l" then
+		MorunoRank_SV["locked"] = true;
+		Frame:EnableMouse(false)
+		Frame:SetMovable(false)
+		DEFAULT_CHAT_FRAME:AddMessage("MorunoRankEnhanced is locked. \"/mre unlock\" or \"/mre u\" to unlock.",1,0,0);
+	elseif msg == "unlock" or msg == "u" then
+		MorunoRank_SV["locked"] = false;
+		Frame:EnableMouse(true)
+		Frame:SetMovable(true)
+		DEFAULT_CHAT_FRAME:AddMessage("MorunoRankEnhanced is unlocked \"/mre lock\" or \"/mre l\" to lock.",0,1,0);
+	elseif msg == "help" then
+		DEFAULT_CHAT_FRAME:AddMessage("MorunoRankEnhanced(UI by Stretpaket)",1,0.4,0.7);
+		DEFAULT_CHAT_FRAME:AddMessage("Help:");
+		DEFAULT_CHAT_FRAME:AddMessage("\"/mre show\" or \"/mre s\" to show.");
+		DEFAULT_CHAT_FRAME:AddMessage("\"/mre hide\" or \"/mre h\" to hide.");
+		DEFAULT_CHAT_FRAME:AddMessage("\"/mre lock\" or \"/mre l\" to lock.");
+		DEFAULT_CHAT_FRAME:AddMessage("\"/mre unlock\" or \"/mre u\" to unlock.");
+		DEFAULT_CHAT_FRAME:AddMessage("\"/mre report\" or \"/mre r\" to to see full MorunoRank report.");
+	elseif msg == "report" or msg == "r" then
+		chatReport = true;
+		MorunoRank();
+	elseif msg == "reset" then
+		Frame:ClearAllPoints()
+		MorunoRank_SV = {["y"] = 0,["x"] = 0,["point"] = "CENTER",["relativePoint"] = "CENTER",["locked"] = false,["hidden"] = false}
+		Frame:SetPoint("CENTER", UIParent, "CENTER", 0,0);
+		Frame:Show()
+		Frame:EnableMouse(true)
+		Frame:SetMovable(true)		
+		DEFAULT_CHAT_FRAME:AddMessage("MorunoRankEnhanced was reset to original settings(placed in the middle of the screen)");		
+	else
+		DEFAULT_CHAT_FRAME:AddMessage("MorunoRankEnhanced(UI by Stretpaket)",1,0.4,0.7);
+		DEFAULT_CHAT_FRAME:AddMessage("Help:");
+		DEFAULT_CHAT_FRAME:AddMessage("\"/mre show\" or \"/mre s\" to show.");
+		DEFAULT_CHAT_FRAME:AddMessage("\"/mre hide\" or \"/mre h\" to hide.");
+		DEFAULT_CHAT_FRAME:AddMessage("\"/mre lock\" or \"/mre l\" to lock.");
+		DEFAULT_CHAT_FRAME:AddMessage("\"/mre unlock\" or \"/mre u\" to unlock.");
+		DEFAULT_CHAT_FRAME:AddMessage("\"/mre report\" or \"/mre r\" to see full MorunoRank report.");
+		DEFAULT_CHAT_FRAME:AddMessage("\"/mre reset\" to reset the window placement(to the middle of the screen).");
+	end	
+end
+
+SLASH_MRE1 = '/mre';
+SLASH_MRE2 = '/MorunoRankEnhanced';
+SlashCmdList["MRE"] = SlashCmd;
+--SLASH MSGs DONE
 
 --EVENTLISTENER
 Frame:SetScript("OnEvent", function()		
